@@ -1,12 +1,12 @@
-package com.jza.my_sns;
+package com.jza;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication()
 public class MySnsApplication {
 
-    public static void main(String[] args) {
+public static void main(String[] args) {
         SpringApplication.run(MySnsApplication.class, args);
     }
 }
