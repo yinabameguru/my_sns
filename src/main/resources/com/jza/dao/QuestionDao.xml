@@ -17,4 +17,7 @@
         ORDER BY id DESC
         LIMIT #{offset},#{limit}
     </select>
+    <select id="us" resultType="com.jza.model.User">
+        select * from user where id = 4
+    </select>
 </mapper>

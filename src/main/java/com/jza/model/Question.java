@@ -1,12 +1,14 @@
 package com.jza.model;
 
+import java.util.Date;
+
 public class Question {
     private int id;
     private String title;
     private String content;
     private int userId;
-    private String created_date;
-    private int comment_count;
+    private Date createdDate;
+    private int commentCount;
 
     public int getId() {
         return id;
@@ -40,20 +42,20 @@ public class Question {
         this.userId = userId;
     }
 
-    public String getCreated_date() {
-        return created_date;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreated_date(String created_date) {
-        this.created_date = created_date;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
-    public int getComment_count() {
-        return comment_count;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public void setComment_count(int comment_count) {
-        this.comment_count = comment_count;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     @Override
@@ -63,8 +65,8 @@ public class Question {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", userId=" + userId +
-                ", created_date='" + created_date + '\'' +
-                ", comment_count=" + comment_count +
+                ", createdDate=" + createdDate +
+                ", commentCount=" + commentCount +
                 '}';
     }
 }

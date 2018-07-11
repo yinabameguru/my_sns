@@ -12,8 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class IndexController {
@@ -29,13 +28,24 @@ public class IndexController {
         model.addAttribute("vos",getQuestions());
         return "index";
     }
-
-    @RequestMapping("/hello")
+    @RequestMapping("/insert")
     @ResponseBody
-    public String fu(Model model){
-        List<User> fu = questionDao.fu();
-        return fu.toString();
+    public String addQuestion(){
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Question question = new Question();
+            question.setTitle("title" + i);
+            question.setContent("1111111111111111111111111");
+            question.setUserId(2);
+            Date date = new Date();
+            date.setTime(date.getTime() + 1000*3600*i);
+            question.setCreatedDate(date);
+            question.setCommentCount(i);
+            list.add(questionService.addQuestion(question));
+        }
+        return list.toString();
     }
+
 
     private List<ViewObject> getQuestions(){
         LinkedList<ViewObject> viewObjects = new LinkedList<>();

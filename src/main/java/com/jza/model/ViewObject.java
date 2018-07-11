@@ -11,4 +11,11 @@ public class ViewObject {
     public Object get(String k){
         return map.get(k);
     }
+
+    @Override
+    public String toString() {
+        return "ViewObject{" +
+                "map=" + map +
+                '}';
+    }
 }

@@ -14,4 +14,7 @@ public class QuestionService {
     public List<Question> getLatestQuestions(int userId,int offset,int limit){
         return questionDao.selectLatestQuestions(userId,offset,limit);
     }
+    public int addQuestion(Question question){
+        return questionDao.insertQuestion(question);
+    }
 }
