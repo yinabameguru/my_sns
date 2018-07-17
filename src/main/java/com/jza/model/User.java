@@ -1,8 +1,12 @@
 package com.jza.model;
 
+import javax.validation.constraints.Size;
+
 public class User {
     private int id;
+    @Size(min = 3,max = 15,message = "请输入3-15位用户名")
     private String name;
+    @Size(min = 6,max = 30,message = "请输入6-30位密码")
     private String password;
     private String salt;
     private String headUrl;

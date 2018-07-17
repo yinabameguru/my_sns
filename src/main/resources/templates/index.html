@@ -19,10 +19,10 @@
                             <div class="feed-item-inner">
                                 <div class="avatar">
                                     <a title="赵永峰" data-tip="p$t$zhao-yong-feng" class="zm-item-link-avatar" target="_blank" href="https://nowcoder.com/people/zhao-yong-feng">
-                                        <img src="../images/res/b3aadf89405941b05a5ce00fb06f8281_m.jpg" class="zm-item-img-avatar"></a>
+                                        <img src="${vo.user.headUrl}" class="zm-item-img-avatar"></a>
                                 </div>
                                 <div class="feed-main">
-                                    <div class="feed-source" data-za-module="FeedSource">热门文章</div>
+                                    <div class="feed-source" data-za-module="FeedSource"></div><br>
                                     <div class="feed-content" data-za-module="PostItem">
                                         <meta itemprop="post-id" content="113477">
                                         <meta itemprop="post-url-token" content="19831487">
@@ -38,7 +38,7 @@
                                                     <span class="label sr-only">赞同</span></button>
                                             </div>
                                             <div class="author-info">
-                                                <a href="https://nowcoder.com/people/zhao-yong-feng" data-tip="p$t$zhao-yong-feng" class="name">${vo.user.name}</a>, ${vo.question.createdDate?datetime}</div>
+                                                <a href="/user/${vo.user.id}" data-tip="p$t$zhao-yong-feng" class="name">${vo.user.name}</a>, ${vo.question.createdDate?datetime}</div>
                                             <div class="zm-item-vote-info" data-votecount="1082" data-za-module="VoteInfo">
                                                 <span class="voters text">
                                                     <a href="#" class="more text">

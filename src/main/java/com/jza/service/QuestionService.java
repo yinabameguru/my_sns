@@ -12,9 +12,20 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
     public List<Question> getLatestQuestions(int userId,int offset,int limit){
-        return questionDao.selectLatestQuestions(userId,offset,limit);
+        try {
+            return questionDao.selectLatestQuestions(userId,offset,limit);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return null;
+        }
+
     }
     public int addQuestion(Question question){
-        return questionDao.insertQuestion(question);
+        try {
+            return questionDao.insertQuestion(question);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return -1;
+        }
     }
 }
