@@ -7,6 +7,7 @@ import com.jza.service.QuestionService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 public class QuestionTest {
@@ -22,5 +23,6 @@ public class QuestionTest {
 ////        System.out.println(us);
 ////        List<Question> latestQuestions = questionService.getLatestQuestions(0, 0, 8);
 ////        System.out.println(latestQuestions.toString());
+        System.out.println(new Date().getTime());
     }
 }

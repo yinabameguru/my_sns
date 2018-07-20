@@ -1,15 +1,20 @@
 package com.jza.controller;
 
+import com.jza.model.Ticket;
 import com.jza.model.User;
 import com.jza.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Map;
 
@@ -18,37 +23,63 @@ public class LoginController {
     @Autowired
     UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public String register(@Valid User user,
                            BindingResult bindingResult,
                            Model model
     ){
-        if (bindingResult.hasErrors()){
-            model.addAttribute("errMsg",bindingResult.getFieldError().getDefaultMessage());
+        try {
+            if (bindingResult.hasErrors()){
+                model.addAttribute("errMsg",bindingResult.getFieldError().getDefaultMessage());
+                return "login";
+            }
+            Map<String, Object> map = userService.register(user);
+            if (map.containsKey("errMsg")){
+                model.addAttribute("errMsg",(String)map.get("errMsg"));
+                return "login";
+            }
+            return "redirect:/";
+        } catch (RuntimeException e) {
+            logger.error("注册异常" + e.getMessage());
+            model.addAttribute("errMsg", "服务器错误");
             return "login";
         }
-        Map<String, Object> map = userService.register(user);
-        if (map.containsKey("errMsg")){
-            model.addAttribute("errMsg",(String)map.get("errMsg"));
-            return "login";
-        }
-        return "redirect:/";
     }
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public String login(
             @Valid User user,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            HttpServletResponse response,
+            @RequestParam(value = "rememberme",required = false) boolean rememberme
     ){
-        if (bindingResult.hasErrors()){
-            model.addAttribute("errMsg",bindingResult.getFieldError().getDefaultMessage());
+        try {
+            if (bindingResult.hasErrors()){
+                model.addAttribute("errMsg",bindingResult.getFieldError().getDefaultMessage());
+                return "login";
+            }
+            Map<String,Object> map = userService.login(user,rememberme);
+            if (map.containsKey("errMsg")){
+                model.addAttribute("errMsg",(String)map.get("errMsg"));
+                return "login";
+            }
+            User userResult = (User) map.get("user");
+            Ticket ticket = (Ticket) map.get("ticket");
+            Cookie cookie = new Cookie("ticket", ticket.getTicket().toString());
+            cookie.setPath("/");
+            if (rememberme)
+                cookie.setMaxAge(3600 * 24 * 10 + 3600 * 8);
+            else
+                cookie.setMaxAge(3600 + 3600 * 8);
+            response.addCookie(cookie);
+            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("登陆异常" + e.getMessage());
+            model.addAttribute("errMsg", "服务器错误");
             return "login";
         }
-        Map<String,Object> map = userService.login(user);
-        if (map.containsKey("errMsg")){
-            model.addAttribute("errMag",(String)map.get("errMsg"));
-            return "login";
-        }
-        return "redirect:/";
     }
 }

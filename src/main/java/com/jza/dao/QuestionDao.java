@@ -13,7 +13,9 @@ import java.util.List;
 public interface QuestionDao {
     String TABLE_NAME = " question ";
     String INSERT_FIELDS = " title,content,user_id,created_date,comment_count ";
-    List<Question> selectLatestQuestions(@Param("userId") int userId,@Param("offset") int offset,@Param("limit") int limit);
+
+    List<Question> selectLatestQuestions(@Param("userId") int userId);
+
     @Insert("insert into " + TABLE_NAME + "(" + INSERT_FIELDS + ")values(#{title},#{content},#{userId},#{createdDate},#{commentCount}) ")
     int insertQuestion(Question question);
 

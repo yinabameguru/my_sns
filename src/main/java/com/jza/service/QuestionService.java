@@ -1,5 +1,7 @@
 package com.jza.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jza.dao.QuestionDao;
 import com.jza.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,15 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     QuestionDao questionDao;
-    public List<Question> getLatestQuestions(int userId,int offset,int limit){
+
+    private int pageSize = 8;
+
+    public PageInfo<Question> getLatestQuestions(int userId,int currentPage){
         try {
-            return questionDao.selectLatestQuestions(userId,offset,limit);
+            PageHelper.startPage(currentPage,pageSize);
+            List<Question> questions = questionDao.selectLatestQuestions(userId);
+            PageInfo<Question> questionPageInfo = new PageInfo<>(questions);
+            return questionPageInfo;
         }catch (RuntimeException e){
             e.printStackTrace();
             return null;

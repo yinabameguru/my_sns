@@ -1,5 +1,6 @@
 package com.jza.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.jza.dao.QuestionDao;
 import com.jza.model.Question;
 import com.jza.model.User;
@@ -9,10 +10,7 @@ import com.jza.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -26,15 +24,22 @@ public class IndexController {
     QuestionDao questionDao;
 
     @RequestMapping(path={"/index","/"},method = {RequestMethod.GET})
-    public String index(Model model){
-        model.addAttribute("vos",getQuestions(0));
+    public String index(
+            Model model,
+            @RequestParam(value = "currentPage",required = false) Integer currentPage
+    ){
+        model.addAttribute("vos",getQuestions(0,currentPage));
         return "index";
     }
 
 
     @RequestMapping(path = "/user/{userId}",method = {RequestMethod.GET})
-    public String userIndex(@PathVariable("userId") Integer userId,Model model){
-        model.addAttribute("vos",getQuestions(userId));
+    public String userIndex(
+            @PathVariable("userId") Integer userId,
+            Model model,
+            @RequestParam(value = "currentPage",required = false) Integer currentPage
+    ){
+        model.addAttribute("vos",getQuestions(userId,currentPage));
         return "/index";
     }
 
@@ -43,11 +48,12 @@ public class IndexController {
         return "login";
     }
 
-    private List<ViewObject> getQuestions(Integer userId){
+    private List<ViewObject> getQuestions(Integer userId,Integer currentPage){
+        currentPage = currentPage == null ? 0 : currentPage;
         LinkedList<ViewObject> viewObjects = new LinkedList<>();
-        List<Question> latestQuestions = questionService.getLatestQuestions(userId, 0, 8);
+        PageInfo<Question> latestQuestions = questionService.getLatestQuestions(userId, currentPage);
         ViewObject viewObject;
-        for (Question question : latestQuestions){
+        for (Question question : latestQuestions.getList()){
             viewObject = new ViewObject();
             viewObject.set("question",question);
             viewObject.set("user",userService.findUser(question.getUserId()));

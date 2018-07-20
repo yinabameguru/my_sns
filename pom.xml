@@ -58,6 +58,20 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.9</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -67,7 +81,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <jvmArguments>
-                        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+                        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006
                     </jvmArguments>
                 </configuration>
             </plugin>
