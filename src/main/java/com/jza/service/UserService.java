@@ -71,4 +71,8 @@ public class UserService {
             throw new RuntimeException();
 
     }
+
+    public Integer logout(String ticket) {
+        return ticketDao.updateStatus(ticket);
+    }
 }

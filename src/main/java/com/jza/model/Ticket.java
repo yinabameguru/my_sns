@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Ticket {
     private Integer id;
-    private Integer user_id;
+    private Integer userId;
     private String ticket;
     private Date expired;
     private Integer status;
@@ -13,8 +13,8 @@ public class Ticket {
     public Ticket(){
 
     }
-    public Ticket(Integer user_id, String ticket, Date expired, Integer status) {
-        this.user_id = user_id;
+    public Ticket(Integer userId, String ticket, Date expired, Integer status) {
+        this.userId = userId;
         this.ticket = ticket;
         this.expired = expired;
         this.status = status;
@@ -22,9 +22,9 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return "ticket{" +
+        return "Ticket{" +
                 "id=" + id +
-                ", user_id=" + user_id +
+                ", userId=" + userId +
                 ", ticket='" + ticket + '\'' +
                 ", expired=" + expired +
                 ", status=" + status +
@@ -40,12 +40,12 @@ public class Ticket {
         this.id = id;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getTicket() {

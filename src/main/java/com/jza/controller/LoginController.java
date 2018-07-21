@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class LoginController {
                 return "login";
             }
             return "redirect:/";
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("注册异常" + e.getMessage());
             model.addAttribute("errMsg", "服务器错误");
             return "login";
@@ -78,6 +79,27 @@ public class LoginController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("登陆异常" + e.getMessage());
+            model.addAttribute("errMsg", "服务器错误");
+            return "login";
+        }
+    }
+
+    @RequestMapping(value = "/logout",method = {RequestMethod.GET})
+    public String logout(
+            HttpServletRequest request,
+            Model model
+    ){
+        try {
+            for (Cookie cookie : request.getCookies()){
+                if (cookie.getName().equals("ticket")){
+                    userService.logout(cookie.getValue());
+                    break;
+                }
+            }
+            return "redirect:/";
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("登出异常" + e.getMessage());
             model.addAttribute("errMsg", "服务器错误");
             return "login";
         }

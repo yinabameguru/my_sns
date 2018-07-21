@@ -28,6 +28,8 @@ public class PassportInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (request.getCookies() == null)
+            return true;
         String ticket = null;
         for (Cookie cookie : request.getCookies()){
             if (cookie.getName().equals("ticket")){
@@ -38,7 +40,7 @@ public class PassportInterceptor implements HandlerInterceptor {
         if (ticket != null){
             Ticket ticketResult = ticketDao.selectTicketByTicket(ticket);
             if (ticketResult.getExpired().after(new Date()) && ticketResult.getStatus() == 0)
-                hostHolder.setUser(userDao.selectUserById(ticketResult.getUser_id()));
+                hostHolder.setUser(userDao.selectUserById(ticketResult.getUserId()));
         }
         return true;
     }

@@ -3,7 +3,6 @@ package com.jza.controller;
 import com.github.pagehelper.PageInfo;
 import com.jza.dao.QuestionDao;
 import com.jza.model.Question;
-import com.jza.model.User;
 import com.jza.model.ViewObject;
 import com.jza.service.QuestionService;
 import com.jza.service.UserService;
@@ -43,7 +42,7 @@ public class IndexController {
         return "/index";
     }
 
-    @RequestMapping(path = "/toRegister",method = {RequestMethod.GET})
+    @RequestMapping(path = "/toRegisterLogin",method = {RequestMethod.GET})
     public String toRegister(){
         return "login";
     }
