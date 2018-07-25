@@ -32,18 +32,22 @@ public class IndexController {
     }
 
 
-    @RequestMapping(path = "/user/{userId}",method = {RequestMethod.GET})
+    @RequestMapping(path = "/user/{userId}",method = {RequestMethod.GET,RequestMethod.POST})
     public String userIndex(
             @PathVariable("userId") Integer userId,
             Model model,
             @RequestParam(value = "currentPage",required = false) Integer currentPage
     ){
         model.addAttribute("vos",getQuestions(userId,currentPage));
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(path = "/toRegisterLogin",method = {RequestMethod.GET})
-    public String toRegister(){
+    public String toRegister(
+            @RequestParam(value = "next",required = false) String next,
+            Model model
+    ){
+        model.addAttribute("next",next);
         return "login";
     }
 

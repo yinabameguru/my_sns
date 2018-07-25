@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,6 +55,7 @@ public class LoginController {
             BindingResult bindingResult,
             Model model,
             HttpServletResponse response,
+            @RequestParam(value = "next",required = false) String next,
             @RequestParam(value = "rememberme",required = false) boolean rememberme
     ){
         try {
@@ -75,7 +77,10 @@ public class LoginController {
             else
                 cookie.setMaxAge(3600 + 3600 * 8);
             response.addCookie(cookie);
-            return "redirect:/";
+            if (StringUtils.isEmpty(next))
+                return  "redirect:/";
+            String s ="redirect:" + next;
+            return s;
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("登陆异常" + e.getMessage());

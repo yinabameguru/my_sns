@@ -1,26 +1,26 @@
 package com.jza.configuration;
 
+import com.jza.interceptor.LoginInterceptor;
 import com.jza.interceptor.PassportInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
 
 @Component
-public class MySnsWebConfiguration extends WebMvcConfigurationSupport
-//        implements WebMvcConfigurer
+public class MySnsWebConfiguration implements WebMvcConfigurer
 {
 
     @Autowired
     PassportInterceptor passportInterceptor;
 
+    @Autowired
+    LoginInterceptor loginInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(passportInterceptor).addPathPatterns("**").excludePathPatterns("/static/**");
-        registry.addInterceptor(passportInterceptor).excludePathPatterns(Arrays.asList("/images/**", "/scripts/**", "/styles/**"));
-//        super.addInterceptors(registry);
+        registry.addInterceptor(passportInterceptor);
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/user/*");
     }
 }
