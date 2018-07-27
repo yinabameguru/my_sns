@@ -91,10 +91,21 @@ public class SensitiveService implements InitializingBean {
     }
 
     private void addWord(String lineTxt) {
-        TrieNode temp = rootNode;
-        for (int i = 0; i < lineTxt.length(); i++) {
-            char c = lineTxt.charAt(i);
-
+        TrieNode tempNode = rootNode;
+        for (int i = 0; i < lineTxt.length(); ++i) {
+            Character c = lineTxt.charAt(i);
+            if (isSymbol(c)) {
+                continue;
+            }
+            TrieNode node = tempNode.getSubNode(c);
+            if (node == null) {
+                node = new TrieNode();
+                tempNode.addSubNode(c, node);
+            }
+            tempNode = node;
+            if (i == lineTxt.length() - 1) {
+                tempNode.setKeywordEnd(true);
+            }
         }
     }
 
