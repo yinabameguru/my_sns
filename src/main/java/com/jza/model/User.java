@@ -61,4 +61,11 @@ public class User {
                 ", headUrl='" + headUrl + '\'' +
                 '}';
     }
+
+    public User(){}
+
+    public User(User user) {
+        this.name = user.getName();
+        this.password = user.getPassword();
+    }
 }

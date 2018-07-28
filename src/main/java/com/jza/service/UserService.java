@@ -9,6 +9,7 @@ import com.sun.org.apache.bcel.internal.generic.RET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.*;
 
@@ -20,6 +21,8 @@ public class UserService {
     UserDao userDao;
     @Autowired
     TicketDao ticketDao;
+    @Autowired
+    SensitiveService sensitiveService;
     public User findUser(int userId) {
         return userDao.selectUserById(userId);
     }

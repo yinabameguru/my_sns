@@ -15,6 +15,9 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
 
+    @Autowired
+    SensitiveService sensitiveService;
+
     private int pageSize = 8;
 
     public PageInfo<Question> getLatestQuestions(int userId,int currentPage){
@@ -24,9 +27,8 @@ public class QuestionService {
             return questionPageInfo;
     }
     public int addQuestion(Question question){
-        question.setTitle(HtmlUtils.htmlEscape(question.getTitle()));
-        question.setContent(HtmlUtils.htmlEscape(question.getContent()));
-
+        question.setTitle(sensitiveService.filter(HtmlUtils.htmlEscape(question.getTitle())));
+        question.setContent(sensitiveService.filter(HtmlUtils.htmlEscape(question.getContent())));
         return questionDao.insertQuestion(question);
     }
 }

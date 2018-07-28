@@ -4,10 +4,13 @@ import com.jza.dao.TicketDao;
 import com.jza.dao.UserDao;
 import com.jza.model.HostHolder;
 import com.jza.model.Ticket;
+import com.jza.model.User;
+import com.jza.service.SensitiveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -19,12 +22,12 @@ public class PassportInterceptor implements HandlerInterceptor {
 
     @Autowired
     TicketDao ticketDao;
-
     @Autowired
     HostHolder hostHolder;
-
     @Autowired
     UserDao userDao;
+    @Autowired
+    SensitiveService sensitiveService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -39,8 +42,11 @@ public class PassportInterceptor implements HandlerInterceptor {
         }
         if (ticket != null){
             Ticket ticketResult = ticketDao.selectTicketByTicket(ticket);
-            if (ticketResult.getExpired().after(new Date()) && ticketResult.getStatus() == 0)
-                hostHolder.setUser(userDao.selectUserById(ticketResult.getUserId()));
+            if (ticketResult.getExpired().after(new Date()) && ticketResult.getStatus() == 0){
+                User user = userDao.selectUserById(ticketResult.getUserId());
+                user.setName(sensitiveService.filter(HtmlUtils.htmlEscape(user.getName())));
+                hostHolder.setUser(user);
+            }
         }
         return true;
     }

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,6 +115,25 @@ public class SensitiveService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-
+        rootNode = new TrieNode();
+        try {
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("SensitiveWords.txt");
+            InputStreamReader reader = new InputStreamReader(is);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String lineTxt;
+            while ((lineTxt = bufferedReader.readLine()) != null) {
+                lineTxt = lineTxt.trim();
+                addWord(lineTxt);
+            }
+            reader.close();
+        }catch (Exception e){
+            logger.error("读取敏感词文件失败" + e.getMessage());
+        }
     }
+//    public static void main(String[] argv) {
+//        SensitiveService s = new SensitiveService();
+//        s.addWord("色情");
+//        System.out.print(s.filter("你好X色**情XX"));
+//    }
 }
+
