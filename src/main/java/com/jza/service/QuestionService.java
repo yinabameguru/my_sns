@@ -31,4 +31,8 @@ public class QuestionService {
         question.setContent(sensitiveService.filter(HtmlUtils.htmlEscape(question.getContent())));
         return questionDao.insertQuestion(question);
     }
+
+    public Question getQuestionById(Integer questionId) {
+        return questionDao.selectQuestionById(questionId);
+    }
 }
