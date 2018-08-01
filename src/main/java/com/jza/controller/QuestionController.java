@@ -1,9 +1,10 @@
 package com.jza.controller;
 
-import com.jza.model.HostHolder;
-import com.jza.model.Question;
+import com.github.pagehelper.PageInfo;
+import com.jza.model.*;
 import com.jza.service.CommentService;
 import com.jza.service.QuestionService;
+import com.jza.service.SensitiveService;
 import com.jza.utils.SnsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 @Controller
 public class QuestionController {
@@ -25,6 +29,8 @@ public class QuestionController {
     HostHolder hostHolder;
     @Autowired
     CommentService commentService;
+    @Autowired
+    SensitiveService sensitiveService;
 
     @RequestMapping(value = "/question/add",method = {RequestMethod.POST})
     @ResponseBody
@@ -53,14 +59,31 @@ public class QuestionController {
     @RequestMapping(value = "/question/{questionId}",method = {RequestMethod.GET})
     public String questionDetail(
             @PathVariable("questionId") Integer questionId,
+            @RequestParam(value = "currentPage",required = false) Integer currentPage,
             Model model
     ){
         try {
             Question question = questionService.getQuestionById(questionId);
             model.addAttribute("question", question);
-
-//            commentService.
-
+            if (currentPage == null)
+                currentPage = 0;
+            PageInfo<Comment> commentPageInfo = commentService.getComment(questionId, CommentType.QUESTION.ordinal(), currentPage);
+            List<Comment> comments = commentPageInfo.getList();
+            LinkedList<ViewObject> viewObjects = new LinkedList<>();
+            ListIterator<Comment> iterator = comments.listIterator();
+            while (iterator.hasNext()) {
+                Comment next = iterator.next();
+                ViewObject viewObject = new ViewObject();
+                viewObject.set("content", next.getContent());
+                viewObject.set("createdDate", next.getCreatedDate());
+                viewObject.set("commentId", next.getId());
+                viewObject.set("userId", next.getUser().getId());
+                viewObject.set("userName", sensitiveService.filter(next.getUser().getName()));
+                viewObject.set("headUrl", next.getUser().getHeadUrl());
+//                viewObject.set("commentCount", "");
+                viewObjects.add(viewObject);
+            }
+            model.addAttribute("vos",viewObjects);
             return "detail";
         } catch (Exception e) {
             logger.error("问题详情错误！" + e.getMessage());

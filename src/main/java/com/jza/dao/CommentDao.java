@@ -24,7 +24,7 @@ public interface CommentDao {
     @Results({
             @Result(id = true,column = "id",property = "id"),
             @Result(column = "content",property = "content"),
-            @Result(column = "user_id",property = "userId"),
+            @Result(column = "user_id",property = "user",one = @One(select = "com.jza.dao.UserDao.selectUserById")),
             @Result(column = "entity_id",property = "entityId"),
             @Result(column = "entity_type",property = "entityType"),
             @Result(column = "created_date",property = "createdDate"),

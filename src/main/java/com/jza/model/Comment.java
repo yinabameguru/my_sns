@@ -11,6 +11,7 @@ public class Comment {
     private Integer entityType;
     private Date createdDate;
     private Integer status;
+    private User user;
 
     @Override
     public String toString() {
@@ -22,6 +23,7 @@ public class Comment {
                 ", entityType=" + entityType +
                 ", createdDate=" + createdDate +
                 ", status=" + status +
+                ", user=" + user +
                 '}';
     }
 
@@ -79,5 +81,13 @@ public class Comment {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

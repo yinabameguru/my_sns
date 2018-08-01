@@ -59,6 +59,7 @@ public class CommentController {
             model.addAttribute("errMsg", "服务器错误");
             return "err";
         }
-        return "redirect/question/" + String.valueOf(questionId);
+        return "redirect:/question/" + String.valueOf(questionId);
+
     }
 }
