@@ -21,6 +21,6 @@ public class MySnsWebConfiguration implements WebMvcConfigurer
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(passportInterceptor);
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/user/*");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/user/*","/question/*");
     }
 }

@@ -27,4 +27,7 @@ public interface QuestionDao {
             @Result(property = "commentCount",column = "comment_count")
     })
     Question selectQuestionById(@Param("id") Integer id);
+
+    @Update({"update", TABLE_NAME, "set comment_count = #{comment_count} where id = #{id}"})
+    Integer updateCommentCount(@Param("comment_count") Integer commentCount, @Param("id") Integer id);
 }

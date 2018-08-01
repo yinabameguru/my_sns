@@ -60,7 +60,6 @@ public class LoginController {
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("注册异常" + e.getMessage());
-            e.printStackTrace();
             model.addAttribute("errMsg", "服务器错误");
             return "login";
         }

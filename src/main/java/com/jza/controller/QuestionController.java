@@ -2,6 +2,7 @@ package com.jza.controller;
 
 import com.jza.model.HostHolder;
 import com.jza.model.Question;
+import com.jza.service.CommentService;
 import com.jza.service.QuestionService;
 import com.jza.utils.SnsUtils;
 import org.slf4j.Logger;
@@ -20,9 +21,10 @@ public class QuestionController {
 
     @Autowired
     QuestionService questionService;
-
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    CommentService commentService;
 
     @RequestMapping(value = "/question/add",method = {RequestMethod.POST})
     @ResponseBody
@@ -56,6 +58,9 @@ public class QuestionController {
         try {
             Question question = questionService.getQuestionById(questionId);
             model.addAttribute("question", question);
+
+//            commentService.
+
             return "detail";
         } catch (Exception e) {
             logger.error("问题详情错误！" + e.getMessage());
@@ -63,4 +68,5 @@ public class QuestionController {
             return "err";
         }
     }
+
 }

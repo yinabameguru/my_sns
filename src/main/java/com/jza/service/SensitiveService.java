@@ -1,6 +1,5 @@
 package com.jza.service;
 
-import io.netty.util.CharsetUtil;
 import org.apache.commons.lang3.CharUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
