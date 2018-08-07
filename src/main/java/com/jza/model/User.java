@@ -64,6 +64,10 @@ public class User {
 
     public User(){}
 
+    public User(String name) {
+        this.name = name;
+    }
+
     public User(User user) {
         this.name = user.getName();
         this.password = user.getPassword();

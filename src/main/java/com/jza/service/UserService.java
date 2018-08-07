@@ -23,8 +23,13 @@ public class UserService {
     TicketDao ticketDao;
     @Autowired
     SensitiveService sensitiveService;
+
     public User findUser(int userId) {
         return userDao.selectUserById(userId);
+    }
+
+    public User getUserByName(String name) {
+        return userDao.selectUserByName(new User(name));
     }
 
     public Map<String,Object> register(User user) {

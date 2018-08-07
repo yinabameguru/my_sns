@@ -3,6 +3,7 @@ package com.jza.controller;
 import com.github.pagehelper.PageInfo;
 import com.jza.model.*;
 import com.jza.service.CommentService;
+import com.jza.service.LikeService;
 import com.jza.service.QuestionService;
 import com.jza.service.SensitiveService;
 import com.jza.utils.SnsUtils;
@@ -31,6 +32,8 @@ public class QuestionController {
     CommentService commentService;
     @Autowired
     SensitiveService sensitiveService;
+    @Autowired
+    LikeService likeService;
 
     @RequestMapping(value = "/question/add",method = {RequestMethod.POST})
     @ResponseBody
@@ -80,6 +83,8 @@ public class QuestionController {
                 viewObject.set("userId", next.getUser().getId());
                 viewObject.set("userName", sensitiveService.filter(next.getUser().getName()));
                 viewObject.set("headUrl", next.getUser().getHeadUrl());
+                viewObject.set("likeCount",likeService.likeCount(CommentType.COMMENT.ordinal(),next.getId()));
+                viewObject.set("liked",likeService.liked(CommentType.COMMENT.ordinal(),next.getId(),hostHolder.getUser().getId()));
 //                viewObject.set("commentCount", "");
                 viewObjects.add(viewObject);
             }
