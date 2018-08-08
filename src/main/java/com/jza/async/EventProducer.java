@@ -1,6 +1,8 @@
 package com.jza.async;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jza.service.QuestionService;
+import com.jza.service.UserService;
 import com.jza.utils.JedisAdapter;
 import com.jza.utils.RedisKeyUtil;
 import org.slf4j.Logger;
@@ -10,11 +12,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EventProducer {
-
     @Autowired
     JedisAdapter jedisAdapter;
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(EventModel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventModel.class);
 
     public boolean fireEvent(EventModel eventModel) {
         try {
@@ -23,6 +24,7 @@ public class EventProducer {
             return true;
         } catch (Exception e) {
             LOGGER.error("事件产生错误" + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class SnsUtils {
     private static final Logger logger = LoggerFactory.getLogger(SnsUtils.class);
+    public static final int MESSAGE_USER_ID = 12;
+    public static final String PATH = "http://127.0.0.1:8081";
 
     public static String getJSONString(int code){
         JSONObject json = new JSONObject();

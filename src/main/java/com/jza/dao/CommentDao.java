@@ -34,4 +34,7 @@ public interface CommentDao {
 
     @Select({"select count(id) from",TABLE_NAME,"where entity_id = #{entity_id} and entity_type = #{entity_type}"})
     Integer selectCount(@Param("entity_id") Integer entityId,@Param("entity_type") Integer entityType);
+
+    @Select({"select",SELECT_FIELDS,"from",TABLE_NAME,"where id = #{id}"})
+    Comment selectCommentByCommentId(@Param("id") Integer commentId);
 }

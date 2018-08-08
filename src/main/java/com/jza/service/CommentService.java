@@ -32,4 +32,8 @@ public class CommentService {
     public Integer getCount(Integer entityId, Integer entityType) {
         return commentDao.selectCount(entityId, entityType);
     }
+
+    public Comment getComment(Integer commentId) {
+        return commentDao.selectCommentByCommentId(commentId);
+    }
 }
