@@ -3,6 +3,7 @@ package com.jza.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jza.dao.MessageDao;
+import com.jza.model.HostHolder;
 import com.jza.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class MessageService {
     MessageDao messageDao;
     @Autowired
     SensitiveService sensitiveService;
+    @Autowired
+    HostHolder hostHolder;
 
     public Integer addMessage(Message message) {
         return messageDao.insertMessage(message);
@@ -23,7 +26,7 @@ public class MessageService {
     public PageInfo<Message> getMessages(String conversationId, Integer currentPage) {
         if (currentPage == null)
             currentPage = 0;
-        PageHelper.startPage(currentPage, 8);
+        PageHelper.startPage(currentPage, 999);
         List<Message> messages = messageDao.selectMessage(conversationId);
         PageInfo<Message> pageInfo = new PageInfo<>(messages);
         return pageInfo;
@@ -39,6 +42,6 @@ public class MessageService {
     }
 
     public Integer updateHasRead(String conversationId) {
-        return messageDao.updateHasRead(conversationId, 1);
+        return messageDao.updateHasRead(hostHolder.getUser().getId(), conversationId, 1);
     }
 }

@@ -1,5 +1,7 @@
 package com.jza.async.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.jza.async.EventHandler;
 import com.jza.async.EventModel;
 import com.jza.async.EventType;
@@ -20,7 +22,13 @@ public class MessageHandler implements EventHandler {
 
     @Override
     public void doHandler(EventModel eventModel) {
-        messageService.addMessage((Message) eventModel.get("message"));
+        try {
+            JSONObject jsonObject =(JSONObject)eventModel.get("message");
+            Message message = jsonObject.toJavaObject(Message.class);
+            messageService.addMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

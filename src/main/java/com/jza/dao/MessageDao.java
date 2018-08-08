@@ -28,7 +28,7 @@ public interface MessageDao {
     List<Message> selectMessage(@Param("conversation_id") String conversationId);
 
     @Select({
-            "SELECT ",SELECT_FIELDS,",COUNT(conversation_id),COUNT(CASE WHEN has_read=0 THEN 1 ELSE NULL END) AS no_read_num FROM(",
+            "SELECT ",SELECT_FIELDS,",COUNT(conversation_id),COUNT(CASE WHEN has_read=0 && to_id = #{userId} THEN 1 ELSE NULL END) AS no_read_num FROM(",
                     "SELECT ",SELECT_FIELDS," FROM ",TABLE_NAME," WHERE from_id = #{userId} OR to_id = #{userId} ORDER BY created_date DESC",
             ")AS j GROUP BY conversation_id ORDER BY id DESC"
     })
@@ -44,6 +44,6 @@ public interface MessageDao {
     List<Message> selectMessageList(@Param("userId") Integer userId);
 
 
-    @Update({"update",TABLE_NAME,"set has_read = #{newHasRead} where conversation_id = #{conversation_id}"})
-    Integer updateHasRead(@Param("conversation_id") String conversationId,@Param("newHasRead") Integer newHasRead);
+    @Update({"update",TABLE_NAME,"set has_read = #{newHasRead} where conversation_id = #{conversation_id} && from_id != #{from_id}"})
+    Integer updateHasRead(@Param("from_id")Integer fromId, @Param("conversation_id") String conversationId,@Param("newHasRead") Integer newHasRead);
 }

@@ -72,11 +72,13 @@ public class LikeService {
         else
             stringBuilder.append("取消踩了你的评论");
         stringBuilder.append("\r\n");
+        stringBuilder.append("查看请点");
+        stringBuilder.append("<a href=\"");
         stringBuilder.append(SnsUtils.PATH);
         stringBuilder.append("/question/");
         Comment comment = commentService.getComment(commentId);
         stringBuilder.append(comment.getEntityId());
-
+        stringBuilder.append("\">这里");
 
         EventModel eventModel = new EventModel(EventType.MESSAGE);
         Message message = new Message();

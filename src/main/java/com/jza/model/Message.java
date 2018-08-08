@@ -80,6 +80,10 @@ public class Message {
         return conversationId;
     }
 
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
+
     public void setConversationId(int fromId, int toId) {
         this.conversationId = fromId < toId ? String.format("%d_%d", fromId, toId) : String.format("%d_%d", toId, fromId);
     }
