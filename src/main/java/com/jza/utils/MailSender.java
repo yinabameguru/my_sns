@@ -1,5 +1,6 @@
 package com.jza.utils;
 
+import com.jza.model.Mail;
 import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +25,17 @@ public class MailSender implements InitializingBean {
     @Autowired
     FreeMarkerConfig freeMarkerConfig;
 
-    public boolean sendWithHTMLTemplate(String to, String subject, String template, Map<String, Object> model) {
+    public boolean sendWithHTMLTemplate(Mail mail) {
         try {
             String nick = MimeUtility.encodeText("meguru");
             InternetAddress from = new InternetAddress(nick + "<yinaba_meguru.163.com>");
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-            Template template1 = freeMarkerConfig.getConfiguration().getTemplate(template,"utf-8");
-            String result = FreeMarkerTemplateUtils.processTemplateIntoString(template1, model);
-            mimeMessageHelper.setTo(to);
+            Template template1 = freeMarkerConfig.getConfiguration().getTemplate(mail.getTemplate(),"utf-8");
+            String result = FreeMarkerTemplateUtils.processTemplateIntoString(template1, mail.getModel());
+            mimeMessageHelper.setTo(mail.getTo());
             mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setSubject(mail.getSubject());
             mimeMessageHelper.setText(result, true);
             mailSender.send(mimeMessage);
             return true;
@@ -47,14 +48,16 @@ public class MailSender implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         mailSender = new JavaMailSenderImpl();
-        mailSender.setUsername("yinaba_meguru.163.com");
+        mailSender.setUsername("yinaba_meguru@163.com");
         mailSender.setPassword("meguru642328789");
         mailSender.setHost("smtp.163.com");
         mailSender.setPort(465);
-        mailSender.setProtocol("smtps");
+        mailSender.setProtocol("smtp");
         mailSender.setDefaultEncoding("utf8");
         Properties mailProperties = new Properties();
-        mailProperties.put("mail.smtp.ssl.enable", true);
+//        mailProperties.put("mail.smtp.ssl.enable", true);
+        mailProperties.put("mail.smtp.auth", true);
+        mailProperties.put("mail.smtp.starttls.enable", true);
         mailSender.setJavaMailProperties(mailProperties);
     }
 }

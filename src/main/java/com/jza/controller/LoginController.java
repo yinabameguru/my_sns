@@ -1,5 +1,9 @@
 package com.jza.controller;
 
+import com.jza.async.EventModel;
+import com.jza.async.EventProducer;
+import com.jza.async.EventType;
+import com.jza.model.Mail;
 import com.jza.model.Ticket;
 import com.jza.model.User;
 import com.jza.service.SensitiveService;
@@ -22,6 +26,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -30,6 +35,8 @@ public class LoginController {
     UserService userService;
     @Autowired
     SensitiveService sensitiveService;
+    @Autowired
+    EventProducer eventProducer;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -50,18 +57,43 @@ public class LoginController {
                 model.addAttribute("errMsg",(String)map.get("errMsg"));
                 return "login";
             }
-            map.putAll(userService.login(user, false));
-            Ticket ticket = (Ticket) map.get("ticket");
-            Cookie cookie = new Cookie("ticket",ticket.getTicket());
-            cookie.setPath("/");
-            cookie.setMaxAge(3600 + 3600 * 8);
-            response.addCookie(cookie);
-            return "redirect:/";
+            EventModel eventModel = new EventModel(EventType.MAIL);
+            user = userService.getUserByName(user.getName());
+            Mail mail = new Mail();
+            Map<String, Object> mailModel = new HashMap<>();
+            mailModel.put("mail", user.getName());
+            mailModel.put("activationCode", user.getActivationCode());
+            mail.setModel(mailModel);
+            mail.setSubject("用户激活");
+            mail.setTemplate("mails/registerMail.html");
+            mail.setTo(user.getName());
+            eventModel.set("mail", mail);
+            eventProducer.fireEvent(eventModel);
+//            map.putAll(userService.login(user, false));
+//            Ticket ticket = (Ticket) map.get("ticket");
+//            Cookie cookie = new Cookie("ticket",ticket.getTicket());
+//            cookie.setPath("/");
+//            cookie.setMaxAge(3600 + 3600 * 8);
+//            response.addCookie(cookie);
+            return "registerSuccess";
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("注册异常" + e.getMessage());
             model.addAttribute("errMsg", "服务器错误");
             return "login";
+        }
+    }
+
+    @RequestMapping(value = "/activation", method = {RequestMethod.GET})
+    public String activation(
+            @RequestParam("mail") String name,
+            @RequestParam("activationCode") String activationCode
+    ) {
+        try {
+            return "registerSuccessMail";
+        } catch (Exception e) {
+            logger.error("激活失败" + e.getMessage());
+            return "err";
         }
     }
     @RequestMapping(value = "/login",method = RequestMethod.POST)

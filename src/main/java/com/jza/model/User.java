@@ -1,15 +1,31 @@
 package com.jza.model;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 public class User {
     private int id;
-    @Size(min = 3,max = 15,message = "请输入3-15位用户名")
+    @Email(message = "邮箱错误")
     private String name;
     @Size(min = 6,max = 30,message = "请输入6-30位密码")
     private String password;
     private String salt;
     private String headUrl;
+    private String activationCode;
+    private int activationStatus;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", activationCode='" + activationCode + '\'' +
+                ", activationStatus=" + activationStatus +
+                '}';
+    }
 
     public int getId() {
         return id;
@@ -51,15 +67,20 @@ public class User {
         this.headUrl = headUrl;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", salt='" + salt + '\'' +
-                ", headUrl='" + headUrl + '\'' +
-                '}';
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
+
+    public int getActivationStatus() {
+        return activationStatus;
+    }
+
+    public void setActivationStatus(int activationStatus) {
+        this.activationStatus = activationStatus;
     }
 
     public User(){}
