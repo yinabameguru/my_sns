@@ -34,7 +34,7 @@ public class EventConsumer  implements InitializingBean, ApplicationContextAware
                 List<EventType> supportEventTypes = eventHandler.getSupportEventTypes();
                 for (EventType eventType : supportEventTypes) {
                     if (!config.containsKey(eventType))
-                        config.put(eventType, new LinkedList<>());
+                        config.put(eventType, (List)(new LinkedList<>()));
                     config.get(eventType).add(eventHandler);
                 }
             }
