@@ -6,6 +6,7 @@ import com.jza.async.EventType;
 import com.jza.model.Mail;
 import com.jza.model.Ticket;
 import com.jza.model.User;
+import com.jza.service.MailService;
 import com.jza.service.SensitiveService;
 import com.jza.service.UserService;
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ public class LoginController {
     SensitiveService sensitiveService;
     @Autowired
     EventProducer eventProducer;
+    @Autowired
+    MailService mailService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -57,24 +60,11 @@ public class LoginController {
                 model.addAttribute("errMsg",(String)map.get("errMsg"));
                 return "login";
             }
-            EventModel eventModel = new EventModel(EventType.MAIL);
             user = userService.getUserByName(user.getName());
-            Mail mail = new Mail();
             Map<String, Object> mailModel = new HashMap<>();
             mailModel.put("mail", user.getName());
             mailModel.put("activationCode", user.getActivationCode());
-            mail.setModel(mailModel);
-            mail.setSubject("用户激活");
-            mail.setTemplate("mails/registerMail.html");
-            mail.setTo(user.getName());
-            eventModel.set("mail", mail);
-            eventProducer.fireEvent(eventModel);
-//            map.putAll(userService.login(user, false));
-//            Ticket ticket = (Ticket) map.get("ticket");
-//            Cookie cookie = new Cookie("ticket",ticket.getTicket());
-//            cookie.setPath("/");
-//            cookie.setMaxAge(3600 + 3600 * 8);
-//            response.addCookie(cookie);
+            mailService.fireMailEvent(user.getName(), "用户激活", "mails/registerMail.html", mailModel);
             return "registerSuccess";
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -84,15 +74,31 @@ public class LoginController {
         }
     }
 
+    @Transactional
     @RequestMapping(value = "/activation", method = {RequestMethod.GET})
     public String activation(
             @RequestParam("mail") String name,
-            @RequestParam("activationCode") String activationCode
+            @RequestParam("activationCode") String activationCode,
+            HttpServletResponse response,
+            Model model
     ) {
         try {
-            return "registerSuccessMail";
+            User user = userService.getUserByName(name);
+            userService.activation(name, activationCode);
+            Ticket ticket = userService.activationLogin(user, false);
+            Cookie cookie = new Cookie("ticket",ticket.getTicket());
+            cookie.setPath("/");
+            cookie.setMaxAge(3600 + 3600 * 8);
+            response.addCookie(cookie);
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("name", user.getName());
+            mailService.fireMailEvent(user.getName(), "激活成功", "/mails/registerSuccessMail.html", map);
+            model.addAttribute("name", name);
+            return "mails/registerSuccessMail";
         } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("激活失败" + e.getMessage());
+            model.addAttribute("errMsg", "激活失败");
             return "err";
         }
     }

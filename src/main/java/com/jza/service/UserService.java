@@ -46,6 +46,12 @@ public class UserService {
         return map;
     }
 
+    public Ticket activationLogin(User user, boolean rememberme) {
+
+        return addTicket(user.getId(), rememberme);
+
+    }
+
     public Map<String, Object> login(User user, boolean rememberme) {
         Map<String, Object> map = new HashMap<>();
         User userResult = userDao.selectUserByName(user);
@@ -85,5 +91,9 @@ public class UserService {
 
     public Integer logout(String ticket) {
         return ticketDao.updateStatus(ticket);
+    }
+
+    public Integer activation(String name, String activationCode) {
+        return userDao.updateActivationStatus(name, activationCode);
     }
 }

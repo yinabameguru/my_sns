@@ -5,7 +5,7 @@ import com.jza.async.EventHandler;
 import com.jza.async.EventModel;
 import com.jza.async.EventType;
 import com.jza.model.Mail;
-import com.jza.utils.MailUtil;
+import com.jza.service.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class MailHandler implements EventHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailHandler.class);
     @Autowired
-    MailUtil mailSender;
+    MailService mailSender;
 
     @Override
     public void doHandler(EventModel eventModel) {

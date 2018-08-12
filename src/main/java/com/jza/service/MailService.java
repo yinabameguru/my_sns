@@ -1,6 +1,10 @@
-package com.jza.utils;
+package com.jza.service;
 
+import com.jza.async.EventModel;
+import com.jza.async.EventProducer;
+import com.jza.async.EventType;
 import com.jza.model.Mail;
+import com.jza.model.User;
 import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,19 +18,25 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-public class MailUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MailUtil.class);
+public class MailService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     @Autowired
     JavaMailSender mailSender;
     @Autowired
     FreeMarkerConfig freeMarkerConfig;
+    @Autowired
+    EventProducer eventProducer;
+    @Autowired
+    UserService userService;
 
     public boolean sendWithHTMLTemplate(Mail mail) {
         try {
             String nick = MimeUtility.encodeText("meguru");
-            InternetAddress from = new InternetAddress(nick + "<yinaba_meguru@foxmail.com>");
+            InternetAddress from = new InternetAddress(nick + "<yinaba_meguru@163.com>");
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
             Template template1 = freeMarkerConfig.getConfiguration().getTemplate(mail.getTemplate(),"utf-8");
@@ -43,6 +53,18 @@ public class MailUtil {
             return false;
         }
     }
+
+    public void fireMailEvent(String to, String subject, String template, Map<String, Object> mailModel){
+        EventModel eventModel = new EventModel(EventType.MAIL);
+        Mail mail = new Mail();
+        mail.setTo(to);
+        mail.setSubject(subject);
+        mail.setTemplate(template);
+        mail.setModel(mailModel);
+        eventModel.set("mail", mail);
+        eventProducer.fireEvent(eventModel);
+    }
+
 //
 //    @Override
 //    public void afterPropertiesSet() throws Exception {

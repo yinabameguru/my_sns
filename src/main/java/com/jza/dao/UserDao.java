@@ -17,4 +17,7 @@ public interface UserDao {
 
     @Insert({"insert into ",TABLE_NAME,"(",INSERT_FIELDS,") values(#{name},#{password},#{salt},#{headUrl},#{activationCode},#{activationStatus})"})
     Integer insertUser(User user);
+
+    @Update({"update",TABLE_NAME,"set activation_status = 1 where name = name and activation_code = activation_code"})
+    Integer updateActivationStatus(@Param("name") String name, @Param("activation_code") String activationCode);
 }

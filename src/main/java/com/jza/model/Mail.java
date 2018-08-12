@@ -9,6 +9,8 @@ public class Mail {
     private String template;
     private Map<String, Object> model = new HashMap<>();
 
+    public Mail() {}
+
     @Override
     public String toString() {
         return "mail{" +
