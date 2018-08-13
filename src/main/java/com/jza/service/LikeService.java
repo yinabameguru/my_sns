@@ -11,8 +11,11 @@ import com.jza.utils.RedisKeyUtil;
 import com.jza.utils.SnsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class LikeService {
@@ -31,6 +34,7 @@ public class LikeService {
         String likeKey = RedisKeyUtil.getLikeKey(entityType, entityId);
         String disLikeKey = RedisKeyUtil.getDisLikeKey(entityType, entityId);
         likeDislike(userId, entityId, likeKey, disLikeKey, "like");
+
         return jedisAdapter.scard(likeKey) - jedisAdapter.scard(disLikeKey);
     }
 
@@ -45,22 +49,23 @@ public class LikeService {
     }
 
     private void likeDislike(Integer userId, Integer commentId, String key1, String key2,String flag1) {
+        Jedis jedis = jedisAdapter.getJedis();
+        Transaction transaction = jedisAdapter.multi(jedis);
         if (jedisAdapter.sismember(key1, String.valueOf(userId))) {
-            jedisAdapter.srem(key1, String.valueOf(userId));
+            transaction.srem(key1, String.valueOf(userId));
 
-            sendMessage(userId, commentId, flag1,"remove");
+            sendMessage(transaction, userId, commentId, flag1,"remove");
 
         }else {
-            jedisAdapter.sadd(key1, String.valueOf(userId));
+            transaction.sadd(key1, String.valueOf(userId));
             if (jedisAdapter.sismember(key2,String.valueOf(userId)))
-                jedisAdapter.srem(key2, String.valueOf(userId));
-
-            sendMessage(userId, commentId, flag1,"add");
+                transaction.srem(key2, String.valueOf(userId));
+            sendMessage(transaction, userId, commentId, flag1,"add");
 
         }
     }
 
-    private void sendMessage(Integer userId, Integer commentId, String flag1, String flag2) {
+    private void sendMessage(Transaction transaction, Integer userId, Integer commentId, String flag1, String flag2) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(userService.findUser(userId).getName());
         if (flag1.equals("like") && flag2.equals("add"))
@@ -89,7 +94,10 @@ public class LikeService {
         message.setFromId(SnsUtils.MESSAGE_USER_ID);
         message.setToId(comment.getUserId());
         eventModel.set("message", message);
-        eventProducer.fireEvent(eventModel);
+        eventProducer.fireEvent(transaction, eventModel);
+        List<Object> exec = transaction.exec();
+        if (exec == null)
+            throw new RuntimeException("踩赞错误");
     }
 
     public long likeCount(Integer entityType, Integer entityId) {

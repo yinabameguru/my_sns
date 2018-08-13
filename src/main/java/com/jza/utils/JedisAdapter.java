@@ -6,7 +6,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Transaction;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -98,6 +100,38 @@ public class JedisAdapter implements InitializingBean {
         } catch (Exception e) {
             LOGGER.error("redis错误" + e.getMessage());
         }finally {
+            if (jedis != null)
+                jedis.close();
+        }
+        return null;
+    }
+
+    public Jedis getJedis() {
+        return pool.getResource();
+    }
+
+    public Transaction multi(Jedis jedis) {
+        try {
+            return jedis.multi();
+        } catch (Exception e) {
+            LOGGER.error("开启redis事务异常" + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Object> exec(Transaction tx, Jedis jedis) {
+        try {
+            return tx.exec();
+        } catch (Exception e) {
+            LOGGER.error("执行redis事务异常" + e.getMessage());
+        }finally {
+            if (tx != null) {
+                try {
+                    tx.close();
+                } catch (IOException ioe) {
+                    LOGGER.error("关闭redis事务异常" + ioe.getMessage());
+                }
+            }
             if (jedis != null)
                 jedis.close();
         }

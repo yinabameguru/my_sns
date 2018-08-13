@@ -1,6 +1,5 @@
 <#include "header.html">
-<link rel="stylesheet" href="../styles/letter.css">
-
+<link rel="stylesheet" media="all" href="../styles/letter.css">
 <div id="main">
     <div class="zg-wrap zu-main clearfix ">
         <ul class="letter-chatlist">
@@ -13,7 +12,7 @@
                     <div class="tooltip-arrow"></div>
                     <div class="tooltip-inner letter-chat clearfix">
                         <div class="letter-info">
-                            <p class="letter-time">${vo.createdDate?string('dd.MM.yyyy HH:mm:ss')}</p>
+                            <p class="letter-time">${vo.createdDate?datetime}</p>
                             <!-- <a href="javascript:void(0);" id="del-link" name="4009580">删除</a> -->
                         </div>
                         <p class="chat-name">${vo.fromName}</p>
@@ -23,9 +22,11 @@
                     </div>
                 </div>
             </li>
-            </#list>
+        </#list>
         </ul>
 
     </div>
 </div>
+<#include "js.html">
+<script type="text/javascript" src="/scripts/main/site/detail.js"></script>
 <#include "footer.html">

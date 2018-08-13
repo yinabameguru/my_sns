@@ -1,49 +1,46 @@
 <#include "header.html">
-<link rel="stylesheet" href="../styles/letter.css">
+<link rel="stylesheet" media="all" href="../styles/letter.css">
     <div id="main">
         <div class="zg-wrap zu-main clearfix ">
             <ul class="letter-list">
                 <#list vos as vo>
-                <li id="conversation-item-10001_622873">
-                <a class="letter-link" href="/msg/detail?conversationId=${vo.conversationId}">
-                </a>
-                <div class="letter-info">
-                <span class="l-time">${vo.createdDate?string('dd.MM.yyyy HH:mm:ss')}</span>
-                <div class="l-operate-bar">
-                    <!--
-                <a href="javascript:void(0);" class="sns-action-del" data-id="10001_622873">
-                删除
-                </a>
-                -->
-                <a href="/msg/detail?conversationId=${vo.conversationId}">
-                    共有${vo.count}条消息
-                </a>
-                </div>
-                </div>
-                <div class="chat-headbox">
-                <#if vo.hasReadCount != 0>
-                <span class="msg-num">
-                    ${vo.hasReadCount}
-                </span>
-                </#if>
-                <a class="list-head">
-                <img alt="头像" src="${vo.fromHeadUrl}">
-                </a>
-                </div>
-                <div class="letter-detail">
-                <a title="${vo.fromName}" class="letter-name level-color-1">
-                    ${vo.fromName}
-                </a>
-                <p class="letter-brief">
-                <a href="/msg/detail?conversationId=${vo.conversationId}">
-                ${vo.content}
-                </a>
-                </p>
-                </div>
+                <li id="conversation-item-10005_622873">
+                    <a class="letter-link" href="/msg/detail?conversationId=${vo.conversationId}"></a>
+                    <div class="letter-info">
+                        <span class="l-time">${vo.createdDate?datetime}</span>
+                        <div class="l-operate-bar">
+                            <!--<a href="javascript:void(0);" class="sns-action-del" data-id="10005_622873">
+                            删除
+                            </a>-->
+                            <a href="/msg/detail?conversationId=${vo.conversationId}">
+                                共有${vo.count}条消息
+                            </a>
+                        </div>
+                    </div>
+                    <div class="chat-headbox">
+                        <#if vo.hasReadCount != 0>
+                        <span class="msg-num">
+                            ${vo.hasReadCount}
+                        </span>
+                        </#if>
+                        <a class="list-head">
+                            <img alt="头像" src="${vo.fromHeadUrl}">
+                        </a>
+                    </div>
+                    <div class="letter-detail">
+                        <a title="通知" class="letter-name level-color-1">
+                            ${vo.fromName}
+                        </a>
+                        <p class="letter-brief">
+                            ${vo.content}
+                        </p>
+                    </div>
                 </li>
-                </#list>
-            </ul>
+            </#list>
+                </ul>
 
         </div>
     </div>
+<#include "js.html">
+<script type="text/javascript" src="/scripts/main/site/detail.js"></script>
 <#include "footer.html">

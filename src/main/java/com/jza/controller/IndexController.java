@@ -1,9 +1,12 @@
 package com.jza.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.jza.async.EventType;
 import com.jza.dao.QuestionDao;
+import com.jza.model.CommentType;
 import com.jza.model.Question;
 import com.jza.model.ViewObject;
+import com.jza.service.CommentService;
 import com.jza.service.QuestionService;
 import com.jza.service.UserService;
 import org.slf4j.Logger;
@@ -23,6 +26,8 @@ public class IndexController {
     QuestionService questionService;
     @Autowired
     QuestionDao questionDao;
+    @Autowired
+    CommentService commentService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -64,6 +69,7 @@ public class IndexController {
             viewObject = new ViewObject();
             viewObject.set("question",question);
             viewObject.set("user",userService.findUser(question.getUserId()));
+            viewObject.set("commentCount", commentService.getCount(question.getId(), CommentType.QUESTION.ordinal()));
             viewObjects.add(viewObject);
         }
         return viewObjects;
