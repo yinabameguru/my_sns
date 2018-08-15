@@ -1,4 +1,4 @@
-#parse("header.html")
+<#include "header.html">
 <link rel="stylesheet" href="../../styles/result.css">
 <link rel="stylesheet" href="../../styles/detail.css">
     <div id="main">
@@ -6,25 +6,25 @@
             <div class="zm-profile-section-wrap zm-profile-followee-page">
                 <div class="zm-profile-section-head">
                     <span class="zm-profile-section-name">
-                        <a href="#">${curUser.name}</a> 粉丝 ${followerCount} 人
+                        <a href="#">${curUser.name}</a> 关注 ${followerCount} 人
                     </span>
                 </div>
                 <div class="zm-profile-section-list">
                     <div id="zh-profile-follows-list">
                         <div class="zh-general-list clearfix">
-                            #foreach($vo in $followers)
+                            <#list followers as vo>
                             <div class="zm-profile-card zm-profile-section-item zg-clear no-hovercard">
-                                #if($vo.followed)
+                                <#if vo.followed>
                                 <div class="zg-right">
                                     <button class="zg-btn zg-btn-unfollow zm-rich-follow-btn small nth-0
-                                    js-follow-user" data-status="1" data-id="$vo.user.id">取消关注</button>
+                                    js-follow-user" data-status="1" data-id="${vo.user.id}">取消关注</button>
                                 </div>
-                                #else
+                                <#else>
                                 <div class="zg-right">
                                     <button class="zg-btn zg-btn-follow zm-rich-follow-btn small nth-0
-                                    js-follow-user">关注</button>
+                                    js-follow-user" data-id="${vo.user.id}">关注</button>
                                 </div>
-                                #end
+                            </#if>
                                 <a title="Barty" class="zm-item-link-avatar" href="/user/${vo.user.id}">
                                     <img src="${vo.user.headUrl}" class="zm-item-img-avatar">
                                 </a>
@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                             </div>
-                            #end
+                        </#list>
                         </div>
                         <a aria-role="button" class="zg-btn-white zu-button-more">更多</a>
                     </div>
@@ -51,6 +51,6 @@
             </div>
         </div>
     </div>
-#parse("js.html")
+<#include "js.html">
 <script type="text/javascript" src="/scripts/main/site/follow.js"></script>
-#parse("footer.html")
+<#include "footer.html">

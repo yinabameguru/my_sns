@@ -152,6 +152,21 @@ public class JedisAdapter implements InitializingBean {
         return 0;
     }
 
+    public Double zscore(String key, String member) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zscore(key, member);
+        } catch (Exception e) {
+            LOGGER.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
     public Jedis getJedis() {
         return pool.getResource();
     }

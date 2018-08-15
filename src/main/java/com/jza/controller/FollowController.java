@@ -13,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +43,19 @@ public class FollowController {
         return "followers";
     }
 
+    @RequestMapping(path = {"/user/{uid}/followees"}, method = {RequestMethod.GET})
+    public String followees(Model model, @PathVariable("uid") int userId) {
+        List<Integer> followeeIds = followService.getFollowees(EntityType.USER.ordinal(), userId);
+        if (hostHolder.getUser() != null) {
+            model.addAttribute("followees", getUsersInfo(hostHolder.getUser().getId(), followeeIds));
+        } else {
+            model.addAttribute("followees", getUsersInfo(0, followeeIds));
+        }
+        model.addAttribute("followeeCount", followService.getFolloweeCount(EntityType.USER.ordinal(), userId));
+        model.addAttribute("curUser", userService.findUser(userId));
+        return "followees";
+    }
+
 
     private List<ViewObject> getUsersInfo(int localUserId, List<Integer> userIds) {
         List<ViewObject> userInfos = new ArrayList<ViewObject>();
@@ -57,10 +67,10 @@ public class FollowController {
             ViewObject vo = new ViewObject();
             vo.set("user", user);
             vo.set("commentCount", commentService.getUserCommentCount(uid));
-            vo.set("followerCount", followService.getFollowerCount(EntityType.ENTITY_USER, uid));
-            vo.set("followeeCount", followService.getFolloweeCount(uid, EntityType.ENTITY_USER));
+            vo.set("followerCount", followService.getFollowerCount(uid, EntityType.USER.ordinal()));
+            vo.set("followeeCount", followService.getFolloweeCount(uid, EntityType.USER.ordinal()));
             if (localUserId != 0) {
-                vo.set("followed", followService.isFollower(localUserId, EntityType.ENTITY_USER, uid));
+                vo.set("followed", followService.isFollower(localUserId, uid, EntityType.USER.ordinal()));
             } else {
                 vo.set("followed", false);
             }
@@ -69,13 +79,33 @@ public class FollowController {
         return userInfos;
     }
 
-    @RequestMapping(value = "/followUser/{userId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/followUser", method = RequestMethod.POST)
     @ResponseBody
     public String followUser(
-            @PathVariable("userId") int userId
+            @RequestParam("userId") int userId
     ) {
         try {
+            if (hostHolder.getUser() == null) {
+                return SnsUtils.getJSONString(999);
+            }
             followService.follow(hostHolder.getUser().getId(), EntityType.USER.ordinal(), userId);
+            return SnsUtils.getJSONString(0);
+        } catch (Exception e) {
+            LOGGER.error("followErr" + e.getMessage());
+            return SnsUtils.getJSONString(1);
+        }
+    }
+
+    @RequestMapping(value = "/unfollowUser", method = RequestMethod.POST)
+    @ResponseBody
+    public String unfollowUser(
+            @RequestParam("userId") int userId
+    ) {
+        try {
+            if (hostHolder.getUser() == null) {
+                return SnsUtils.getJSONString(999);
+            }
+            followService.unFollow(hostHolder.getUser().getId(), EntityType.USER.ordinal(), userId);
             return SnsUtils.getJSONString(0);
         } catch (Exception e) {
             LOGGER.error("followErr" + e.getMessage());

@@ -1,5 +1,6 @@
 package com.jza.service;
 
+import com.jza.model.EntityType;
 import com.jza.utils.JedisAdapter;
 import com.jza.utils.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,24 @@ public class FollowService {
         return true;
     }
 
-    public List<Integer> getFollowers(int curUserId, int entityType) {
+    public List<Integer> getFollowers(int entityType, int curUserId) {
         String followKey = RedisKeyUtil.getFollowKey(entityType, curUserId);
         return getIdsFromSet(jedisAdapter.zrevrange(followKey, 0, 8));
     }
 
-    public long getFollowerCount(int curUserId, int entityType) {
+    public List<Integer> getFollowees(int entityType, int entityId) {
+        String followedKey = RedisKeyUtil.getFollowedKey(entityType, entityId);
+        return getIdsFromSet(jedisAdapter.zrevrange(followedKey, 0, 8));
+    }
+
+    public long getFollowerCount(int entityType, int curUserId) {
         String followKey = RedisKeyUtil.getFollowKey(entityType, curUserId);
         return jedisAdapter.zcard(followKey);
+    }
+
+    public long getFolloweeCount(int entityType, int entityId) {
+        String followedKey = RedisKeyUtil.getFollowedKey(entityType, entityId);
+        return jedisAdapter.zcard(followedKey);
     }
 
     private List<Integer> getIdsFromSet(Set<String> idset) {
@@ -56,4 +67,9 @@ public class FollowService {
         return ids;
     }
 
+
+    public boolean isFollower(int curUserId, Integer userId, int entityType) {
+        String followKey = RedisKeyUtil.getFollowKey(entityType, curUserId);
+        return jedisAdapter.zscore(followKey, String.valueOf(userId)) != null;
+    }
 }
