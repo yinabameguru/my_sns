@@ -54,18 +54,18 @@ public class LikeService {
         if (jedisAdapter.sismember(key1, String.valueOf(userId))) {
             transaction.srem(key1, String.valueOf(userId));
 
-            sendMessage(transaction, userId, commentId, flag1,"remove");
+            sendMessage(jedis, transaction, userId, commentId, flag1,"remove");
 
         }else {
             transaction.sadd(key1, String.valueOf(userId));
             if (jedisAdapter.sismember(key2,String.valueOf(userId)))
                 transaction.srem(key2, String.valueOf(userId));
-            sendMessage(transaction, userId, commentId, flag1,"add");
+            sendMessage(jedis, transaction, userId, commentId, flag1,"add");
 
         }
     }
 
-    private void sendMessage(Transaction transaction, Integer userId, Integer commentId, String flag1, String flag2) {
+    private void sendMessage(Jedis jedis, Transaction transaction, Integer userId, Integer commentId, String flag1, String flag2) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(userService.findUser(userId).getName());
         if (flag1.equals("like") && flag2.equals("add"))
@@ -95,7 +95,7 @@ public class LikeService {
         message.setToId(comment.getUserId());
         eventModel.set("message", message);
         eventProducer.fireEvent(transaction, eventModel);
-        List<Object> exec = transaction.exec();
+        List<Object> exec = jedisAdapter.exec(transaction, jedis);
         if (exec == null)
             throw new RuntimeException("踩赞错误");
     }

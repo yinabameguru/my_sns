@@ -9,7 +9,9 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class JedisAdapter implements InitializingBean {
@@ -22,33 +24,33 @@ public class JedisAdapter implements InitializingBean {
         pool = new JedisPool("redis://localhost:6379/1");
     }
 
-    public long sadd(String key, String value) {
-        Jedis jedis = null;
-        try {
-            jedis = pool.getResource();
-            return jedis.sadd(key, value);
-        } catch (Exception e) {
-            LOGGER.error("redis异常" + e.getMessage());
-        }finally {
-            if (jedis != null)
-                jedis.close();
-        }
-        return 0;
-    }
-
-    public long srem(String key, String value) {
-        Jedis jedis = null;
-        try {
-            jedis = pool.getResource();
-            return jedis.srem(key, value);
-        } catch (Exception e) {
-            LOGGER.error("redis异常" + e.getMessage());
-        }finally {
-            if (jedis != null)
-                jedis.close();
-        }
-        return 0;
-    }
+//    public long sadd(String key, String value) {
+//        Jedis jedis = null;
+//        try {
+//            jedis = pool.getResource();
+//            return jedis.sadd(key, value);
+//        } catch (Exception e) {
+//            LOGGER.error("redis异常" + e.getMessage());
+//        }finally {
+//            if (jedis != null)
+//                jedis.close();
+//        }
+//        return 0;
+//    }
+//
+//    public long srem(String key, String value) {
+//        Jedis jedis = null;
+//        try {
+//            jedis = pool.getResource();
+//            return jedis.srem(key, value);
+//        } catch (Exception e) {
+//            LOGGER.error("redis异常" + e.getMessage());
+//        }finally {
+//            if (jedis != null)
+//                jedis.close();
+//        }
+//        return 0;
+//    }
 
     public long scard(String key) {
         Jedis jedis = null;
@@ -104,6 +106,50 @@ public class JedisAdapter implements InitializingBean {
                 jedis.close();
         }
         return null;
+    }
+
+    public long zadd(String key, Double score, String member) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zadd(key, score, member);
+        } catch (Exception e) {
+            LOGGER.error("redis错误" + e.getMessage());
+        }finally {
+            if (jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public Set<String> zrevrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zrevrange(key, start, end);
+        } catch (Exception e) {
+            LOGGER.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+    public long zcard(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zcard(key);
+        } catch (Exception e) {
+            LOGGER.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return 0;
     }
 
     public Jedis getJedis() {
