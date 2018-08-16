@@ -1,5 +1,6 @@
 # my_sns
 sns社区项目
+
 该项目使用IDEA开发，GitHub版本控制，采用springboot,myBatis框架，FreeMarker模板，数据库使用MySQL，Redis。
 
 项目功能：注册激活登陆，发布动态，评论，私信，敏感词过滤，异步站内消息通知，踩赞，关注，timeline。
