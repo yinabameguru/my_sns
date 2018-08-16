@@ -8,6 +8,7 @@ import com.jza.service.CommentService;
 import com.jza.service.FollowService;
 import com.jza.service.UserService;
 import com.jza.utils.SnsUtils;
+import javafx.geometry.Pos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class FollowController {
@@ -91,7 +94,7 @@ public class FollowController {
             followService.follow(hostHolder.getUser().getId(), EntityType.USER.ordinal(), userId);
             return SnsUtils.getJSONString(0);
         } catch (Exception e) {
-            LOGGER.error("followErr" + e.getMessage());
+            LOGGER.error("followUserErr" + e.getMessage());
             return SnsUtils.getJSONString(1);
         }
     }
@@ -108,7 +111,50 @@ public class FollowController {
             followService.unFollow(hostHolder.getUser().getId(), EntityType.USER.ordinal(), userId);
             return SnsUtils.getJSONString(0);
         } catch (Exception e) {
-            LOGGER.error("followErr" + e.getMessage());
+            LOGGER.error("unfollowUserErr" + e.getMessage());
+            return SnsUtils.getJSONString(1);
+        }
+    }
+
+    @RequestMapping(value = "/followQuestion", method = RequestMethod.POST)
+    @ResponseBody
+    public String followQuestion(
+            @RequestParam("questionId") int questionId
+    ) {
+        try {
+            if (hostHolder.getUser() == null) {
+                return SnsUtils.getJSONString(999);
+            }
+            followService.follow(hostHolder.getUser().getId(), EntityType.QUESTION.ordinal(), questionId);
+            Map<String, Object> info = new HashMap<>();
+            info.put("headUrl", hostHolder.getUser().getHeadUrl());
+            info.put("name", hostHolder.getUser().getName());
+            info.put("id", hostHolder.getUser().getId());
+            info.put("count", followService.getFolloweeCount(EntityType.QUESTION.ordinal(), questionId));
+
+            return SnsUtils.getJSONString(0, info);
+        } catch (Exception e) {
+            LOGGER.error("followQuestionErr" + e.getMessage());
+            return SnsUtils.getJSONString(1);
+        }
+    }
+
+    @RequestMapping(value = "/unfollowQuestion", method = RequestMethod.POST)
+    @ResponseBody
+    public String unfollowQuestion(
+            @RequestParam("questionId") int questionId
+    ) {
+        try {
+            if (hostHolder.getUser() == null) {
+                return SnsUtils.getJSONString(999);
+            }
+            followService.unFollow(hostHolder.getUser().getId(), EntityType.QUESTION.ordinal(), questionId);
+            Map<String, Object> info = new HashMap<>();
+            info.put("id", hostHolder.getUser().getId());
+            info.put("count", followService.getFolloweeCount(EntityType.QUESTION.ordinal(), questionId));
+            return SnsUtils.getJSONString(0, info);
+        } catch (Exception e) {
+            LOGGER.error("unfollowQuestionErr" + e.getMessage());
             return SnsUtils.getJSONString(1);
         }
     }

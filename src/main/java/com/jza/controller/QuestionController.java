@@ -2,10 +2,7 @@ package com.jza.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.jza.model.*;
-import com.jza.service.CommentService;
-import com.jza.service.LikeService;
-import com.jza.service.QuestionService;
-import com.jza.service.SensitiveService;
+import com.jza.service.*;
 import com.jza.utils.SnsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +31,10 @@ public class QuestionController {
     SensitiveService sensitiveService;
     @Autowired
     LikeService likeService;
+    @Autowired
+    FollowService followService;
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = "/question/add",method = {RequestMethod.POST})
     @ResponseBody
@@ -88,7 +89,23 @@ public class QuestionController {
 //                viewObject.set("commentCount", "");
                 viewObjects.add(viewObject);
             }
+            LinkedList<ViewObject> followUsers = new LinkedList<>();
+            List<Integer> followeeIds = followService.getFollowees(EntityType.QUESTION.ordinal(), questionId);
+            ListIterator<Integer> iterator1 = followeeIds.listIterator();
+            while (iterator1.hasNext()) {
+                User user = userService.findUser(iterator1.next());
+                ViewObject viewObject = new ViewObject();
+                viewObject.set("id", user.getId());
+                viewObject.set("headUrl", user.getHeadUrl());
+                viewObject.set("name", user.getName());
+                followUsers.add(viewObject);
+            }
+            if (hostHolder != null) {
+                model.addAttribute("followed", followService.isFollower(hostHolder.getUser().getId(), questionId, EntityType.QUESTION.ordinal()));
+            }
+            model.addAttribute("followeeCount", followService.getFolloweeCount(EntityType.QUESTION.ordinal(), questionId));
             model.addAttribute("vos",viewObjects);
+            model.addAttribute("followUsers", followUsers);
             return "detail";
         } catch (Exception e) {
             logger.error("问题详情错误！" + e.getMessage());

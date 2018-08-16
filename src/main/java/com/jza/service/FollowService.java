@@ -68,8 +68,8 @@ public class FollowService {
     }
 
 
-    public boolean isFollower(int curUserId, Integer userId, int entityType) {
+    public boolean isFollower(int curUserId, Integer entityId, int entityType) {
         String followKey = RedisKeyUtil.getFollowKey(entityType, curUserId);
-        return jedisAdapter.zscore(followKey, String.valueOf(userId)) != null;
+        return jedisAdapter.zscore(followKey, String.valueOf(entityId)) != null;
     }
 }
