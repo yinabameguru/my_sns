@@ -1,5 +1,8 @@
 package com.jza.controller;
 
+import com.jza.async.EventModel;
+import com.jza.async.EventProducer;
+import com.jza.async.EventType;
 import com.jza.model.Comment;
 import com.jza.model.CommentType;
 import com.jza.model.HostHolder;
@@ -31,6 +34,8 @@ public class CommentController {
     HostHolder hostHolder;
     @Autowired
     QuestionService questionService;
+    @Autowired
+    EventProducer eventProducer;
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping(value = "/addComment",method = {RequestMethod.POST})
@@ -53,6 +58,10 @@ public class CommentController {
             commentService.addComment(comment);
             Integer count = commentService.getCount(questionId, CommentType.QUESTION.ordinal());
             questionService.updateCommentCount(count, questionId);
+
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT).setActorId(comment.getUserId())
+                    .setEntityId(questionId));
+
         } catch (Exception e) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("添加评论错误！" + e.getMessage());

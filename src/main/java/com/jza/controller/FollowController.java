@@ -82,7 +82,7 @@ public class FollowController {
         return userInfos;
     }
 
-    @RequestMapping(value = "/followUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/followUser", method = {RequestMethod.POST,RequestMethod.GET})
     @ResponseBody
     public String followUser(
             @RequestParam("userId") int userId
