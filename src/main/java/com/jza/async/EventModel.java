@@ -9,6 +9,7 @@ public class EventModel {
     private int actorId;
     private int entityType;
     private int entityId;
+    private int entityOwnerId;
 
     public EventModel(EventType eventType) {
         this.Type = eventType;
@@ -65,6 +66,15 @@ public class EventModel {
 
     public EventModel setEntityId(int entityId) {
         this.entityId = entityId;
+        return this;
+    }
+
+    public int getEntityOwnerId() {
+        return entityOwnerId;
+    }
+
+    public EventModel setEntityOwnerId(int entityOwnerId) {
+        this.entityOwnerId = entityOwnerId;
         return this;
     }
 }

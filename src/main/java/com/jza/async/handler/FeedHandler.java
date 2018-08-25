@@ -49,7 +49,7 @@ public class FeedHandler implements EventHandler {
         map.put("userName", actor.getName());
 
         if (model.getType() == EventType.COMMENT ||
-                (model.getType() == EventType.FOLLOW  && model.getEntityType() == EntityType.ENTITY_QUESTION.ordinal())) {
+                (model.getType() == EventType.FOLLOW  && model.getEntityType() == EntityType.USER.ordinal())) {
             Question question = questionService.getQuestionById(model.getEntityId());
             if (question == null) {
                 return null;
@@ -80,7 +80,7 @@ public class FeedHandler implements EventHandler {
         feedService.addFeed(feed);
 
         // 获得所有粉丝
-        List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER.ordinal(), model.getActorId());
+        List<Integer> followers = followService.getFollowers(EntityType.USER.ordinal(), model.getActorId());
         // 系统队列
         followers.add(0);
         // 给所有粉丝推事件

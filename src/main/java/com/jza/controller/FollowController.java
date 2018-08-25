@@ -1,14 +1,17 @@
 package com.jza.controller;
 
+import com.jza.async.EventModel;
+import com.jza.async.EventProducer;
+import com.jza.async.EventType;
 import com.jza.model.EntityType;
 import com.jza.model.HostHolder;
 import com.jza.model.User;
 import com.jza.model.ViewObject;
 import com.jza.service.CommentService;
 import com.jza.service.FollowService;
+import com.jza.service.QuestionService;
 import com.jza.service.UserService;
 import com.jza.utils.SnsUtils;
-import javafx.geometry.Pos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,10 @@ public class FollowController {
     UserService userService;
     @Autowired
     CommentService commentService;
+    @Autowired
+    EventProducer eventProducer;
+    @Autowired
+    QuestionService questionService;
     private static final Logger LOGGER = LoggerFactory.getLogger(FollowController.class);
 
     @RequestMapping(path = {"/user/{uid}/followers"}, method = {RequestMethod.GET})
@@ -92,6 +99,9 @@ public class FollowController {
                 return SnsUtils.getJSONString(999);
             }
             followService.follow(hostHolder.getUser().getId(), EntityType.USER.ordinal(), userId);
+//            eventProducer.fireEvent(new EventModel(EventType.FOLLOW)
+//                    .setActorId(hostHolder.getUser().getId()).setEntityId(userId)
+//                    .setEntityType(EntityType.USER.ordinal()).setEntityOwnerId(userId));
             return SnsUtils.getJSONString(0);
         } catch (Exception e) {
             LOGGER.error("followUserErr" + e.getMessage());
@@ -131,6 +141,10 @@ public class FollowController {
             info.put("name", hostHolder.getUser().getName());
             info.put("id", hostHolder.getUser().getId());
             info.put("count", followService.getFolloweeCount(EntityType.QUESTION.ordinal(), questionId));
+
+//            eventProducer.fireEvent(new EventModel(EventType.FOLLOW)
+//                    .setActorId(hostHolder.getUser().getId()).setEntityId(questionId)
+//                    .setEntityType(EntityType.QUESTION.ordinal()).setEntityOwnerId(questionService.getQuestionById(questionId).getUserId()));
 
             return SnsUtils.getJSONString(0, info);
         } catch (Exception e) {
