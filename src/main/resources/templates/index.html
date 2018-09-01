@@ -3,68 +3,60 @@
 <#include "/header2.html">
 <link rel="stylesheet" href="../styles/index.css">
 <div class="zg-wrap zu-main clearfix " role="main">
-    <div class="zm-profile-section-wrap zm-profile-followee-page">
-        <div class="zm-profile-section-head">
+    <#if curUser??>
+    <link rel="stylesheet" href="../../styles/result.css">
+    <link rel="stylesheet" href="../../styles/detail.css">
+    <div id="main">
+        <div class="zg-wrap zu-main clearfix ">
+            <div class="zm-profile-section-wrap zm-profile-followee-page">
+                <div class="zm-profile-section-head">
                     <span class="zm-profile-section-name">
-                        <a href="/people/zjuyxy">叶向宇</a> 关注了 70 人
+                        <a href="#">${curUser.name}</a> 关注 ${followerCount} 人
                     </span>
-            <a class="zg-right zg-link-litblue-normal zm-profile-answer-page-return" href="/people/zjuyxy">返回个人主页</a>
-        </div>
-        <div class="zm-profile-section-list">
-            <div id="zh-profile-follows-list">
-                <div class="zh-general-list clearfix">
-                    <div class="zm-profile-card zm-profile-section-item zg-clear no-hovercard">
-                        <div class="zg-right">
-                            <button class="zg-btn zg-btn-unfollow zm-rich-follow-btn small nth-0">取消关注</button>
-                        </div>
-                        <a title="Barty" class="zm-item-link-avatar" href="/people/buaabarty">
-                            <img src="https://pic2.zhimg.com/3bc6c4dbf50dbce5fa27174f23404849_m.jpg" class="zm-item-img-avatar">
-                        </a>
-                        <div class="zm-list-content-medium">
-                            <h2 class="zm-list-content-title"><a data-tip="p$t$buaabarty" href="https://www.nowcoder.com/people/buaabarty" class="zg-link" title="Barty">Barty</a></h2>
+                </div>
+                <div class="zm-profile-section-list">
+                    <div id="zh-profile-follows-list">
+                        <div class="zh-general-list clearfix">
+                            <#list followers as vo>
+                            <div class="zm-profile-card zm-profile-section-item zg-clear no-hovercard">
+                                <#if vo.followed>
+                                <div class="zg-right">
+                                    <button class="zg-btn zg-btn-unfollow zm-rich-follow-btn small nth-0
+                                    js-follow-user" data-status="1" data-id="${vo.user.id}">取消关注</button>
+                                </div>
+                                <#else>
+                                <div class="zg-right">
+                                    <button class="zg-btn zg-btn-follow zm-rich-follow-btn small nth-0
+                                    js-follow-user" data-id="${vo.user.id}">关注</button>
+                                </div>
+                            </#if>
+                            <a title="Barty" class="zm-item-link-avatar" href="/user/${vo.user.id}">
+                                <img src="${vo.user.headUrl}" class="zm-item-img-avatar">
+                            </a>
+                            <div class="zm-list-content-medium">
+                                <h2 class="zm-list-content-title"><a data-tip="p$t$buaabarty" href="/user/${vo.user.id}" class="zg-link" title="Barty">${vo.user.name}</a></h2>
 
-                            <div class="zg-big-gray">计蒜客教研首席打杂</div>
-                            <div class="details zg-gray">
-                                <a target="_blank" href="/people/buaabarty/followers" class="zg-link-gray-normal">462 关注者</a>
-                                /
-                                <a target="_blank" href="/people/buaabarty/asks" class="zg-link-gray-normal">0 提问</a>
-                                /
-                                <a target="_blank" href="/people/buaabarty/answers" class="zg-link-gray-normal">21 回答</a>
-                                /
-                                <a target="_blank" href="/people/buaabarty" class="zg-link-gray-normal">548 赞同</a>
+                                <!-- <div class="zg-big-gray">计蒜客教研首席打杂</div> -->
+                                <div class="details zg-gray">
+                                    <a target="_blank" href="/user/${vo.user.id}/followers" class="zg-link-gray-normal">${vo.followerCount}粉丝</a>
+                                    /
+                                    <a target="_blank" href="/user/${vo.user.id}/followees" class="zg-link-gray-normal">${vo.followeeCount}关注</a>
+                                    /
+                                    <a target="_blank" href="#" class="zg-link-gray-normal">${vo.commentCount} 回答</a>
+                                    /
+                                    <a target="_blank" href="#" class="zg-link-gray-normal">548 赞同</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="zm-profile-card zm-profile-section-item zg-clear no-hovercard">
-                        <div class="zg-right">
-                            <button class="zg-btn zg-btn-follow zm-rich-follow-btn small nth-0">关注他</button>
-                        </div>
-                        <a title="赵轩昂" class="zm-item-link-avatar" href="/people/sd0061">
-                            <img src="https://pic2.zhimg.com/4ee0d8959_m.jpg" class="zm-item-img-avatar">
-                        </a>
-                        <div class="zm-list-content-medium">
-                            <h2 class="zm-list-content-title">
-                                <a href="https://www.nowcoder.com/people/sd0061" class="zg-link" title="赵轩昂">赵轩昂</a>
-                            </h2>
-
-                            <div class="zg-big-gray">(#°Д°) </div>
-                            <div class="details zg-gray">
-                                <a target="_blank" href="/people/sd0061/followers" class="zg-link-gray-normal">899 关注者</a>
-                                /
-                                <a target="_blank" href="/people/sd0061/asks" class="zg-link-gray-normal">0 提问</a>
-                                /
-                                <a target="_blank" href="/people/sd0061/answers" class="zg-link-gray-normal">23 回答</a>
-                                /
-                                <a target="_blank" href="/people/sd0061" class="zg-link-gray-normal">2592 赞同</a>
-                            </div>
-                        </div>
-                    </div>
+                    </#list>
                 </div>
                 <a aria-role="button" class="zg-btn-white zu-button-more">更多</a>
             </div>
         </div>
     </div>
+</div>
+</div>
+</#if>
     <div class="zu-main-content">
         <div class="zu-main-content-inner">
             <div class="zg-section" id="zh-home-list-title">
@@ -150,4 +142,6 @@
 </div>
 <#include "/js.html">
 <script type="text/javascript" src="/scripts/main/site/detail.js"></script>
+
+<script type="text/javascript" src="/scripts/main/site/follow.js"></script>
 <#include "/footer.html">

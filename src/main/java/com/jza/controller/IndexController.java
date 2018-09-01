@@ -3,10 +3,9 @@ package com.jza.controller;
 import com.github.pagehelper.PageInfo;
 import com.jza.async.EventType;
 import com.jza.dao.QuestionDao;
-import com.jza.model.CommentType;
-import com.jza.model.Question;
-import com.jza.model.ViewObject;
+import com.jza.model.*;
 import com.jza.service.CommentService;
+import com.jza.service.FollowService;
 import com.jza.service.QuestionService;
 import com.jza.service.UserService;
 import org.slf4j.Logger;
@@ -28,6 +27,12 @@ public class IndexController {
     QuestionDao questionDao;
     @Autowired
     CommentService commentService;
+    @Autowired
+    FollowService followService;
+    @Autowired
+    HostHolder hostHolder;
+    @Autowired
+    FollowController followController;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
@@ -37,6 +42,20 @@ public class IndexController {
             @RequestParam(value = "currentPage",required = false) Integer currentPage
     ){
         model.addAttribute("vos",getQuestions(0,currentPage));
+
+
+        if (hostHolder.getUser() != null){
+            List<Integer> followerIds = followService.getFollowers(EntityType.USER.ordinal(), hostHolder.getUser().getId());
+            if (hostHolder.getUser() != null) {
+                model.addAttribute("followers", followController.getUsersInfo(hostHolder.getUser().getId(), followerIds));
+            } else {
+                model.addAttribute("followers", followController.getUsersInfo(0, followerIds));
+            }
+            model.addAttribute("followerCount", followService.getFollowerCount(EntityType.USER.ordinal(),  hostHolder.getUser().getId()));
+            model.addAttribute("curUser", userService.findUser( hostHolder.getUser().getId()));
+        }
+
+
         return "index";
     }
 

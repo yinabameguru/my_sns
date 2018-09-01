@@ -9,8 +9,8 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
 
 import java.io.IOException;
-import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -113,6 +113,48 @@ public class JedisAdapter implements InitializingBean {
         try {
             jedis = pool.getResource();
             return jedis.zadd(key, score, member);
+        } catch (Exception e) {
+            LOGGER.error("redis错误" + e.getMessage());
+        }finally {
+            if (jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public long zadd(String key, Map<String, Double> map) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.zadd(key, map);
+        } catch (Exception e) {
+            LOGGER.error("redis错误" + e.getMessage());
+        }finally {
+            if (jedis != null)
+                jedis.close();
+        }
+        return 0;
+    }
+
+    public Set<String> keys(String pattern) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.keys(pattern);
+        } catch (Exception e) {
+            LOGGER.error("redis错误" + e.getMessage());
+        }finally {
+            if (jedis != null)
+                jedis.close();
+        }
+        return null;
+    }
+
+    public long expire(String key, int time) {
+        Jedis jedis = null;
+        try {
+            jedis = pool.getResource();
+            return jedis.expire(key, time);
         } catch (Exception e) {
             LOGGER.error("redis错误" + e.getMessage());
         }finally {

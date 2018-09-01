@@ -83,9 +83,14 @@ public class FeedHandler implements EventHandler {
         List<Integer> followers = followService.getFollowers(EntityType.USER.ordinal(), model.getActorId());
         // 系统队列
         followers.add(0);
+        //给最近登陆过的粉丝推送
+        Set<String> keys = jedisAdapter.keys("TIMELINE:");
+
         // 给所有粉丝推事件
         for (int follower : followers) {
             String timelineKey = RedisKeyUtil.getTimelineKey(follower);
+            if (!keys.contains(timelineKey))
+                continue;
             Long l = feed.getCreatedDate().getTime();
             jedisAdapter.zadd(timelineKey, l.doubleValue(), String.valueOf(feed.getId()));
             // 限制最长长度，如果timelineKey的长度过大，就删除后面的新鲜事
@@ -94,6 +99,6 @@ public class FeedHandler implements EventHandler {
 
     @Override
     public List<EventType> getSupportEventTypes() {
-        return Arrays.asList(new EventType[]{EventType.COMMENT, EventType.FOLLOW});
+        return Arrays.asList(new EventType[]{EventType.COMMENT});
     }
 }

@@ -67,7 +67,7 @@ public class FollowController {
     }
 
 
-    private List<ViewObject> getUsersInfo(int localUserId, List<Integer> userIds) {
+    public List<ViewObject> getUsersInfo(int localUserId, List<Integer> userIds) {
         List<ViewObject> userInfos = new ArrayList<ViewObject>();
         for (Integer uid : userIds) {
             User user = userService.findUser(uid);
