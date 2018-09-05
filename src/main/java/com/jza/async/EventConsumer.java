@@ -40,22 +40,19 @@ public class EventConsumer  implements InitializingBean, ApplicationContextAware
             }
         }
         ExecutorService pool = Executors.newFixedThreadPool(9);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    List<String> list = jedisAdapter.brpop(RedisKeyUtil.getEventQueueKey());
-                    for (String message : list) {
-                        if (message.equals(RedisKeyUtil.getEventQueueKey()))
-                            continue;
-                        EventModel eventModel = JSON.parseObject(message, EventModel.class);
-                        if (!config.containsKey(eventModel.getType())) {
-                            LOGGER.error("不能识别的事件");
-                            continue;
-                        }
-                        for (EventHandler eventHandler : config.get(eventModel.getType())) {
-                            eventHandler.doHandler(eventModel);
-                        }
+        Runnable runnable = () -> {
+            while (true) {
+                List<String> list = jedisAdapter.brpop(RedisKeyUtil.getEventQueueKey());
+                for (String message : list) {
+                    if (message.equals(RedisKeyUtil.getEventQueueKey()))
+                        continue;
+                    EventModel eventModel = JSON.parseObject(message, EventModel.class);
+                    if (!config.containsKey(eventModel.getType())) {
+                        LOGGER.error("不能识别的事件");
+                        continue;
+                    }
+                    for (EventHandler eventHandler : config.get(eventModel.getType())) {
+                        eventHandler.doHandler(eventModel);
                     }
                 }
             }
