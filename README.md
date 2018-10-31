@@ -10,7 +10,7 @@
 ### 发环境
 JDK1.8，IDEA，Git+GitHub，springboot,myBatis，FreeMarker，MySQL，Redis,solr。
 
-### 目基本功能
+### 项目基本功能
   为用户提供社交服务的基本功能。这些功能包括：
   
   1、用户模块：为用户提供注册、激活、登陆的基本功能。用户注册使用solt加密，验证邮件激活，采用t票机制为用户提供登陆状态的保存，并实现单点登陆。
