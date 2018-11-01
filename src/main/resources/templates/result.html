@@ -11,7 +11,7 @@
                 <#list vos as vo>
                 <li class="item clearfix">
                     <div class="title">
-                        <a target="_blank" href="/user/${vo.user.id}" class="js-title-link">${vo.question.title}</a>
+                        <a target="_blank" href="/user/${vo.user.id}?name=${vo.user.name}" class="js-title-link">${vo.question.title}</a>
                     </div>
                     <div class="content">
 
@@ -23,7 +23,7 @@
                                     </div>
                                     <div class="entry-body">
                                         <div class="entry-meta">
-                                            <strong class="author-line"><a class="author" href="/user/${vo.user.id}">${vo.user.name}</a>，${vo.question.createdDate?datetime}</strong>
+                                            <strong class="author-line"><a class="author" href="/user/${vo.user.id}?name=${vo.user.name}">${vo.user.name}</a>，${vo.question.createdDate?datetime}</strong>
                                         </div>
                                         <div class="entry-content js-collapse-body">
                                             <div class="summary hidden-expanded" style="">

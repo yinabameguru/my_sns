@@ -30,11 +30,11 @@
                                     js-follow-user" data-id="${vo.user.id}">关注</button>
                                 </div>
                             </#if>
-                            <a title="Barty" class="zm-item-link-avatar" href="/user/${vo.user.id}">
+                            <a title="Barty" class="zm-item-link-avatar" href="/user/${vo.user.id}?name=${vo.user.name}">
                                 <img src="${vo.user.headUrl}" class="zm-item-img-avatar">
                             </a>
                             <div class="zm-list-content-medium">
-                                <h2 class="zm-list-content-title"><a data-tip="p$t$buaabarty" href="/user/${vo.user.id}" class="zg-link" title="Barty">${vo.user.name}</a></h2>
+                                <h2 class="zm-list-content-title"><a data-tip="p$t$buaabarty" href="/user/${vo.user.id}?name=${vo.user.name}" class="zg-link" title="Barty">${vo.user.name}</a></h2>
 
                                 <!-- <div class="zg-big-gray">计蒜客教研首席打杂</div> -->
                                 <div class="details zg-gray">
@@ -61,11 +61,6 @@
         <div class="zu-main-content-inner">
             <div class="zg-section" id="zh-home-list-title">
                 <i class="zg-icon zg-icon-feedlist"></i>最新动态
-                <span class="zg-right zm-noti-cleaner-setting" style="list-style:none">
-                        <a href="https://nowcoder.com/settings/filter" class="zg-link-gray-normal">
-                            <i class="zg-icon zg-icon-settings"></i>设置
-                        </a>
-                    </span>
             </div>
             <div class="zu-main-feed-con navigable" data-feedtype="topstory" id="zh-question-list">
                 <div id="js-home-feed-list" class="zh-general-list topstory clearfix">
@@ -88,7 +83,7 @@
                                             <a target="_blank" class="post-link" href="/question/${vo.question.id}">${vo.question.title}</a></h2>
                                         <div class="entry-body post-body js-collapse-body">
                                             <div class="zm-item-vote">
-                                                <a class="zm-item-vote-count js-expand js-vote-count" href="/followUser?userId=${vo.user.id}" data-bind-votecount="">1关注</a></div>
+                                                <a class="zm-item-vote-count js-expand js-vote-count" href="/followUser?userId=${vo.user.id}" data-bind-votecount="">关注</a></div>
                                             <div class="zm-votebar" data-za-module="VoteBar">
                                                 <button class="up" aria-pressed="false" title="赞同">
                                                     <i class="icon vote-arrow"></i>
@@ -96,7 +91,7 @@
                                                     <span class="label sr-only">赞同</span></button>
                                             </div>
                                             <div class="author-info">
-                                                <a href="/user/${vo.user.id}" data-tip="p$t$zhao-yong-feng" class="name">${vo.user.name}</a>, ${vo.question.createdDate?datetime}</div>
+                                                <a href="/user/${vo.user.id}?name=${vo.user.name}" data-tip="p$t$zhao-yong-feng" class="name">${vo.user.name}</a>, ${vo.question.createdDate?datetime}</div>
                                             <div class="zm-item-vote-info" data-votecount="1082" data-za-module="VoteInfo">
                                                 <span class="voters text">
                                                     <a href="#" class="more text">

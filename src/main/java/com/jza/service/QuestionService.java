@@ -28,7 +28,7 @@ public class QuestionService {
     }
     public int addQuestion(Question question){
         question.setTitle(sensitiveService.filter(HtmlUtils.htmlEscape(question.getTitle())));
-        question.setContent(sensitiveService.filter(HtmlUtils.htmlEscape(question.getContent())));
+        //question.setContent(sensitiveService.filter(HtmlUtils.htmlEscape(question.getContent())));
         return questionDao.insertQuestion(question);
     }
 

@@ -30,4 +30,8 @@ public interface QuestionDao {
 
     @Update({"update", TABLE_NAME, "set comment_count = #{comment_count} where id = #{id}"})
     Integer updateCommentCount(@Param("comment_count") Integer commentCount, @Param("id") Integer id);
+
+    @Select({"select ", "distinct user_id", "from ", TABLE_NAME})
+    @Results(@Result(column = "user_id", property = "user", one = @One(select = "com.jza.dao.UserDao.selectUserById")))
+    List<String> selectQuestionNames();
 }

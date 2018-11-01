@@ -4,10 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.jza.async.EventType;
 import com.jza.dao.QuestionDao;
 import com.jza.model.*;
-import com.jza.service.CommentService;
-import com.jza.service.FollowService;
-import com.jza.service.QuestionService;
-import com.jza.service.UserService;
+import com.jza.service.*;
+import com.jza.utils.SnsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
@@ -33,14 +32,19 @@ public class IndexController {
     HostHolder hostHolder;
     @Autowired
     FollowController followController;
+    @Autowired
+    BloomFilterService bloomFilterService;
 
     private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @RequestMapping(path={"/index","/"},method = {RequestMethod.GET})
     public String index(
             Model model,
-            @RequestParam(value = "currentPage",required = false) Integer currentPage
+            @RequestParam(value = "currentPage",required = false) Integer currentPage,
+            HttpServletRequest request
     ){
+        String ipAddr = SnsUtils.getIpAddr(request);
+        System.out.println(ipAddr);
         model.addAttribute("vos",getQuestions(0,currentPage));
 
 
@@ -63,10 +67,14 @@ public class IndexController {
     @RequestMapping(path = "/user/{userId}",method = {RequestMethod.GET,RequestMethod.POST})
     public String userIndex(
             @PathVariable("userId") Integer userId,
+            @RequestParam("name") String name,
             Model model,
             @RequestParam(value = "currentPage",required = false) Integer currentPage
     ){
-        model.addAttribute("vos",getQuestions(userId,currentPage));
+        if (bloomFilterService.isExist(bloomFilterService.getNameFilter(), name))
+            model.addAttribute("vos",getQuestions(userId,currentPage));
+        else
+            model.addAttribute("vos",new LinkedList<ViewObject>());
         return "index";
     }
 

@@ -6,7 +6,7 @@
     <groupId>com.jza</groupId>
     <artifactId>my_sns</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>my_sns</name>
     <description>Demo project for Spring Boot</description>
@@ -99,10 +99,15 @@
             <artifactId>solr-solrj</artifactId>
             <version>RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
 
     </dependencies>
 
     <build>
+        <finalName>sns</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
