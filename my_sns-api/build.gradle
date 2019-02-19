@@ -1,0 +1,44 @@
+version '2.0-SNAPSHOT'
+
+apply plugin: 'maven-publish'
+
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier "sources"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar
+
+            pom.withXml {
+                asNode().dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text()
+                    }
+                }.each() {
+                    it.scope*.value = 'compile'
+                }
+            }
+        }
+
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username rootProject['releaseRepository.username']
+                password rootProject['releaseRepository.password']
+            }
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url rootProject['snapshotRepository.url']
+            } else {
+                url rootProject['releaseRepository.url']
+            }
+        }
+    }
+}
+

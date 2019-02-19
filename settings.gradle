@@ -1,0 +1,3 @@
+rootProject.name = 'my_sns'
+include 'my_sns-api', 'my_sns-server'
+
